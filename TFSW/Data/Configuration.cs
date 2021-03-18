@@ -17,5 +17,6 @@ namespace TFSW.Data
         public string Domain { get; set; }
         public Guid Project { get; set; }
         public bool Activated { get; set; }
+        public bool IsDomainCreds { get; set; }
     }
 }

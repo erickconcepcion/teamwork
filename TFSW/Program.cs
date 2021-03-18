@@ -7,14 +7,16 @@ using System.Text;
 using Microsoft.VisualStudio.Services.WebApi.Patch;
 using Microsoft.VisualStudio.Services.WebApi.Patch.Json;
 using Newtonsoft.Json.Linq;
+using Microsoft.VisualStudio.Services.Client;
+using System.Net;
 
 Uri orgUrl = new Uri("org url");           
 string personalAccessToken = "personal token";
 int workItemId = 23;   
 
 // Create a connection
-var credentials = new VssBasicCredential(string.Empty, personalAccessToken);
-//var credentials = new VssClientCredentials(new WindowsCredential(new NetworkCredential("user", "pass.", "domain")));
+//var credentials = new VssBasicCredential(string.Empty, personalAccessToken);
+var credentials = new VssClientCredentials(new WindowsCredential(new NetworkCredential("user", "pass.", "domain")));
 VssConnection connection = new VssConnection(orgUrl, credentials);
 
 // Show details a work item
@@ -94,15 +96,3 @@ foreach (var r in rel)
 }
 
 
-static string GetHiddenConsoleInput()
-{
-    StringBuilder input = new StringBuilder();
-    while (true)
-    {
-        var key = Console.ReadKey(true);
-        if (key.Key == ConsoleKey.Enter) break;
-        if (key.Key == ConsoleKey.Backspace && input.Length > 0) input.Remove(input.Length - 1, 1);
-        else if (key.Key != ConsoleKey.Backspace) input.Append(key.KeyChar);
-    }
-    return input.ToString();
-}

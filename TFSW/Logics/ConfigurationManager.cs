@@ -3,26 +3,23 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using TFSW.Data;
 
-namespace TFSW.Data
+namespace TFSW.Logics
 {
-    public class ConfigurationManager
+    public class ConfigurationManager: BaseManager<Configuration>
     {
-        public SQLiteConnection Db { get; set; }
-        public Configuration CurrentConfig => Configurations.Where(c => c.Activated).FirstOrDefault();
-        public IEnumerable<Configuration> Configurations => Db.Table<Configuration>();
+        public Configuration CurrentConfig => All.Where(c => c.Activated).FirstOrDefault();
 
         public ConfigurationManager()
         {
-            Db = new SQLiteConnection(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "teamwork.db"));
-            Db.CreateTable<Configuration>();
             ResetConfigs();
         }
         public void CreateConfig(Configuration config)
         {
             if (config.Activated)
             {
-                foreach (var conf in Configurations.Where(c=> c.Activated))
+                foreach (var conf in All.Where(c=> c.Activated))
                 {
                     conf.Activated = false;
                     Db.Update(conf);
@@ -41,7 +38,7 @@ namespace TFSW.Data
         }
         private void ResetConfigs()
         {
-            if (!Configurations.Any())
+            if (!All.Any())
             {
                 CreateConfig(new Configuration { Activated = true });
             }
