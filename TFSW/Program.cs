@@ -9,8 +9,17 @@ using Microsoft.VisualStudio.Services.WebApi.Patch.Json;
 using Newtonsoft.Json.Linq;
 using Microsoft.VisualStudio.Services.Client;
 using System.Net;
+using TFSW.Logics;
 
-Uri orgUrl = new Uri("org url");           
+var devops = new AzureDevopsClient(new ConfigurationManager().CurrentConfig, true);
+var rels = await devops.GetWorkItemRelationTypes();
+foreach (var r in rels)
+{
+    Console.WriteLine("  {0}: {1}", r.Name, r.ReferenceName);
+}
+
+
+/*Uri orgUrl = new Uri("org url");           
 string personalAccessToken = "personal token";
 int workItemId = 23;   
 
@@ -95,4 +104,4 @@ foreach (var r in rel)
     Console.WriteLine("  {0}: {1}", r.Name, r.ReferenceName);
 }
 
-
+*/

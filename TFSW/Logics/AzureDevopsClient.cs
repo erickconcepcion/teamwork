@@ -25,23 +25,32 @@ namespace TFSW.Logics
         private WorkItemTrackingHttpClient _workItemClient;
         private ProjectHttpClient _projectHttpClient;
         private VssCredentials _credentials;
-        public AzureDevopsClient(Configuration config)
+        public AzureDevopsClient(Configuration config, bool setWorkItemClient = false, bool setProjectClient = false)
         {
             _config = config;
             _orgUrl = new Uri(config.ServerUrl);
             SetConnection();
+            if (setWorkItemClient) SetWorkItemClient();
+            if (setProjectClient) SetProjectClient();
         }
         private void SetConnection()=> _connection = new VssConnection(_orgUrl, 
             _config.IsDomainCreds
             ? new VssClientCredentials(new WindowsCredential(new NetworkCredential(_config.User,
-                Utilities.GetHiddenConsoleInput("Azure devops Password (hidden field)"), _config.Domain)))
+                Utilities.GetHiddenConsoleInput("Azure devops Domain Password (hidden field)"), _config.Domain)))
             : new VssBasicCredential(string.Empty, _config.PersonalToken)
             );
-        private void SetWorkItemClients() => _workItemClient = _connection.GetClient<WorkItemTrackingHttpClient>();
+        private void SetWorkItemClient() => _workItemClient = _connection.GetClient<WorkItemTrackingHttpClient>();
         private void SetProjectClient() => _projectHttpClient = _connection.GetClient<ProjectHttpClient>();
-        private Task<WorkItem> GetWorkItem(int workItemId)
+        public Task<WorkItem> GetWorkItem(int workItemId)
             => _workItemClient.GetWorkItemAsync(workItemId);
-        private Task<IPagedList<TeamProjectReference>> GetProjects() => _projectHttpClient.GetProjects();
+        public async Task<IEnumerable<TeamProjectReference>> GetProjects() => await _projectHttpClient.GetProjects();
+        public async Task<IEnumerable<WorkItemRelationType>> GetWorkItemRelationTypes()
+            => await _workItemClient.GetRelationTypesAsync();
+        /*public async Task<IEnumerable<WorkItem>> NestedWorkItemsToAnother(int workItemId, IEnumerable<WorkItemHierarchy> hierarchy)
+        {
+            var workItem = await GetWorkItem(workItemId);
+        }*/
+        
         public void Dispose()
         {
             if (_workItemClient is not null)
