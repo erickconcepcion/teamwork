@@ -14,8 +14,22 @@ using TFSW.Utils;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using TFSW.Data;
+using TFSW.Sections;
+using System.Linq;
+using TFSW.Params;
 
-var devops = new AzureDevopsClient(new ConfigurationManager().CurrentConfig, true);
+var features = new List<ISection>
+{
+    new Show()
+};
+var featureRouter = features.ToDictionary(k => k.SectionName, v=> v);
+if (new ParamValidator(args, featureRouter.Keys).Validate())
+{
+    featureRouter[args[0]].Execute(args.Skip(1));
+}
+
+
+/*var devops = new AzureDevopsClient(new ConfigurationManager().CurrentConfig, true);
 
 Console.WriteLine((await devops.GetWorkItemRelationTypesReference()).ToStringReferenceTable());
 Console.WriteLine((await devops.GetWorkItemTypesReference()).ToStringReferenceTable());
@@ -27,7 +41,7 @@ var tasks = await Task.WhenAll(new Task<IEnumerable<WorkReference>>[]{
 
 Console.WriteLine(tasks[0].ToStringReferenceTable());
 Console.WriteLine(tasks[1].ToStringReferenceTable());
-
+*/
 
 /*Uri orgUrl = new Uri("org url");           
 string personalAccessToken = "personal token";

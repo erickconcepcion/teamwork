@@ -1,14 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace TFSW.Params
 {
-    public class ParamValidator
+    class ShowParams
     {
         private IEnumerable<string> _parameters;
         private IEnumerable<string> _keys;
-        public ParamValidator(IEnumerable<string> parameters, IEnumerable<string> keys)
+        public ShowParams(IEnumerable<string> parameters, IEnumerable<string> keys)
         {
             _parameters = parameters;
             _keys = keys;
@@ -16,15 +18,15 @@ namespace TFSW.Params
         public bool Validate()
         {
             var ret = true;
-            if (_parameters.Count() == 0)
+            if (_parameters.Count()!=1)
             {
-                Console.WriteLine("No command provided.");
+                Console.WriteLine("Feature only support one parameter.");
                 ret = false;
             }
-            var commandName = _parameters.FirstOrDefault();
-            if (!_keys.Any(k => k == commandName.ToLower()))
+            var featureName = _parameters.FirstOrDefault();
+            if (!_keys.Any(k => k== featureName.ToLower()))
             {
-                Console.WriteLine($"Command name \"{commandName}\" not found.");
+                Console.WriteLine($"Feature name \"{featureName}\" not found.");
                 ret = false;
             }
             return ret;
