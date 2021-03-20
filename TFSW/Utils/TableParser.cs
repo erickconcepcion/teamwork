@@ -36,8 +36,8 @@ namespace TFSW.Utils
             {
                 for (int colIndex = 0; colIndex < arrValues.GetLength(1); colIndex++)
                 {
-                    arrValues[rowIndex, colIndex] = valueSelectors[colIndex]
-                    .Invoke(values[rowIndex - 1]).ToString();
+                    var val = valueSelectors[colIndex].Invoke(values[rowIndex - 1])?.ToString();
+                    arrValues[rowIndex, colIndex] = val ?? "";
                 }
             }
 

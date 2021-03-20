@@ -10,13 +10,23 @@ using Newtonsoft.Json.Linq;
 using Microsoft.VisualStudio.Services.Client;
 using System.Net;
 using TFSW.Logics;
+using TFSW.Utils;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+using TFSW.Data;
 
 var devops = new AzureDevopsClient(new ConfigurationManager().CurrentConfig, true);
-var rels = await devops.GetWorkItemRelationTypes();
-foreach (var r in rels)
-{
-    Console.WriteLine("  {0}: {1}", r.Name, r.ReferenceName);
-}
+
+Console.WriteLine((await devops.GetWorkItemRelationTypesReference()).ToStringReferenceTable());
+Console.WriteLine((await devops.GetWorkItemTypesReference()).ToStringReferenceTable());
+
+var tasks = await Task.WhenAll(new Task<IEnumerable<WorkReference>>[]{
+                devops.GetWorkItemRelationTypesReference(),
+                devops.GetWorkItemTypesReference()
+            });
+
+Console.WriteLine(tasks[0].ToStringReferenceTable());
+Console.WriteLine(tasks[1].ToStringReferenceTable());
 
 
 /*Uri orgUrl = new Uri("org url");           

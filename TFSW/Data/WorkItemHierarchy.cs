@@ -14,6 +14,7 @@ namespace TFSW.Data
         public string Title { get; set; }
         public string HierarchyType { get; set; }
         public string WorkItemType { get; set; }
+        public string WorkRelationshipType { get; set; }
         public string HierarchyName { get; set; }
     }
 }

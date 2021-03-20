@@ -16,14 +16,22 @@ namespace TFSW.Logics
             _configManager = configManager;
             _azureDevopsClient = new AzureDevopsClient(_configManager.CurrentConfig, true);
         }
-        public void CreateHierarchy(IEnumerable<WorkItemHierarchy>hierarchy, string hierarchyName)
+        public async void CreateHierarchy(IEnumerable<WorkItemHierarchy>hierarchy, string hierarchyName)
         {
-            var relations = _azureDevopsClient.GetWorkItemRelationTypes().Result;
+            var tasks = await Task.WhenAll(new Task<IEnumerable<WorkReference>>[]{
+                _azureDevopsClient.GetWorkItemRelationTypesReference(),
+                _azureDevopsClient.GetWorkItemTypesReference()
+            });
+            var relations = tasks[0];
+            var types = tasks[1];
             foreach (var item in hierarchy)
             {
-                var relation = relations.Where(r => r.Name == item.HierarchyType);
+                var relation = relations.Where(r => r.Name == item.HierarchyType).FirstOrDefault();
+                var type = types.Where(r => r.Name == item.WorkItemType).FirstOrDefault();
                 if (relation is not null)
                 {
+                    item.WorkRelationshipType = relation?.ReferenceName ?? relations.Where(r => r.Name == "Child").FirstOrDefault().ReferenceName;
+                    item.WorkItemType = type?.Name ?? "Task";
                     item.HierarchyName = hierarchyName;
                     Db.Insert(item);
                 }

@@ -14,6 +14,7 @@ using TFSW.Utils;
 using System.Threading.Tasks;
 using Microsoft.TeamFoundation.Core.WebApi;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace TFSW.Logics
 {
@@ -46,11 +47,64 @@ namespace TFSW.Logics
         public async Task<IEnumerable<TeamProjectReference>> GetProjects() => await _projectHttpClient.GetProjects();
         public async Task<IEnumerable<WorkItemRelationType>> GetWorkItemRelationTypes()
             => await _workItemClient.GetRelationTypesAsync();
-        /*public async Task<IEnumerable<WorkItem>> NestedWorkItemsToAnother(int workItemId, IEnumerable<WorkItemHierarchy> hierarchy)
+        public async Task<IEnumerable<WorkItemType>> GetWorkItemTypes()
+            => await _workItemClient.GetWorkItemTypesAsync(_config.Project);
+        public async Task<IEnumerable<WorkReference>> GetWorkItemRelationTypesReference()
+            => (await _workItemClient.GetRelationTypesAsync()).Select(t => new WorkReference
+            {
+                Name = t.Name,
+                ReferenceName = t.ReferenceName
+            });
+        public async Task<IEnumerable<WorkReference>> GetWorkItemTypesReference()
+            => (await _workItemClient.GetWorkItemTypesAsync(_config.Project)).Select(t=> new WorkReference { 
+                Name = t.Name, ReferenceName = t.ReferenceName
+            });
+        public async Task<IEnumerable<WorkItem>> NestedWorkItem(WorkItem workItem, IEnumerable<WorkItemHierarchy> hierarchy)
         {
-            var workItem = await GetWorkItem(workItemId);
-        }*/
-        
+            return await Task.WhenAll(hierarchy.Select(h => _workItemClient.CreateWorkItemAsync(GetPatchBased(workItem, h.Title, h.WorkRelationshipType),
+            _config.Project,
+            h.WorkItemType
+            )));
+        }
+        private JsonPatchDocument GetPatchBased(WorkItem workItem, string title, string relationReferenceName)
+        {
+            var obj = new JObject();
+            obj["rel"] = relationReferenceName;
+            obj["url"] = string.Format("{0}/_apis/wit/workItems/{1}", _orgUrl.AbsoluteUri, workItem.Id);
+            return new JsonPatchDocument()
+            {
+                new JsonPatchOperation()
+                {
+                    Operation = Operation.Add,
+                    Path = "/fields/System.Title",
+                    Value = title
+                },
+                new JsonPatchOperation()
+                {
+                    Operation = Operation.Add,
+                    Path = "/relations/-",
+                    Value = obj
+                },
+                new JsonPatchOperation()
+                {
+                    Operation = Operation.Add,
+                    Path = "/fields/System.IterationPath",
+                    Value = workItem.Fields["System.IterationPath"]
+                },
+                new JsonPatchOperation()
+                {
+                    Operation = Operation.Add,
+                    Path = "/fields/System.AreaPath",
+                    Value = workItem.Fields["System.AreaPath"]
+                },
+                new JsonPatchOperation()
+                {
+                    Operation = Operation.Add,
+                    Path = "/fields/System.AssignedTo",
+                    Value = workItem.Fields["System.AssignedTo"]
+                }
+            };
+        }
         public void Dispose()
         {
             if (_workItemClient is not null)
