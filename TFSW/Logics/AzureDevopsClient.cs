@@ -77,7 +77,7 @@ namespace TFSW.Logics
                 {
                     Operation = Operation.Add,
                     Path = "/fields/System.Title",
-                    Value = title
+                    Value = string.Format(title, workItem.Id, workItem.Fields["/fields/System.Title"])
                 },
                 new JsonPatchOperation()
                 {
