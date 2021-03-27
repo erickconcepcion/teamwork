@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TFSW.Params
 {
-    class ParamProcessor: Dictionary<string, ParamValidator>, IDictionary<string, ParamValidator>
+    class ParamProcessor: Dictionary<string, CommandValidator>, IDictionary<string, CommandValidator>
     {
     }
 }

@@ -17,6 +17,7 @@ namespace TFSW.Logics
         }
         public void CreateConfig(Configuration config)
         {
+            config.Id = 0;
             if (config.Activated)
             {
                 foreach (var conf in All.Where(c=> c.Activated))

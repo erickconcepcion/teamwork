@@ -18,12 +18,12 @@ using TFSW.Sections;
 using System.Linq;
 using TFSW.Params;
 
-var features = new List<ISection>
+var features = new List<BaseSection>
 {
-    new Show()
+    new ShowSection()
 };
 var featureRouter = features.ToDictionary(k => k.SectionName, v=> v);
-if (new ParamValidator(args, featureRouter.Keys).Validate())
+if (new CommandValidator(args, featureRouter.Keys).Validate())
 {
     featureRouter[args[0]].Execute(args.Skip(1));
 }

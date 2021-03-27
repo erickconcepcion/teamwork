@@ -4,11 +4,11 @@ using System.Linq;
 
 namespace TFSW.Params
 {
-    public class ParamValidator
+    public class CommandValidator
     {
         private IEnumerable<string> _parameters;
         private IEnumerable<string> _keys;
-        public ParamValidator(IEnumerable<string> parameters, IEnumerable<string> keys)
+        public CommandValidator(IEnumerable<string> parameters, IEnumerable<string> keys)
         {
             _parameters = parameters;
             _keys = keys;

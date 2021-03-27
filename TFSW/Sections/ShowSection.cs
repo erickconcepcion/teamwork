@@ -10,13 +10,11 @@ using TFSW.Utils;
 
 namespace TFSW.Sections
 {
-    public class Show: ISection
+    public class ShowSection: BaseSection
     {
-        public string SectionName => "show";
-        private readonly Configuration _config;
-        public Show()
+        public ShowSection()
         {
-            _config = new ConfigurationManager().CurrentConfig;
+            SectionName = "show";
         }
         private Dictionary<string, Action> Actions => new Dictionary<string, Action>()
         {
@@ -29,7 +27,7 @@ namespace TFSW.Sections
             { "types", ()=> Console.WriteLine(new AzureDevopsClient(_config, true).GetWorkItemTypes().Result
                 .ToStringTypeTable()) }
         };
-        public void Execute(IEnumerable<string> parameters)
+        public override void Execute(IEnumerable<string> parameters)
         {
             if (new ShowParams(parameters, Actions.Keys.AsEnumerable()).Validate())
             {
