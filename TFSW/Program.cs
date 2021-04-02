@@ -20,7 +20,8 @@ using TFSW.Params;
 
 var features = new List<BaseSection>
 {
-    new ShowSection()
+    new ShowSection(),
+    new ConfigSection()
 };
 var featureRouter = features.ToDictionary(k => k.SectionName, v=> v);
 if (new CommandValidator(args, featureRouter.Keys).Validate())

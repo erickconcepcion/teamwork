@@ -27,5 +27,26 @@ namespace TFSW.Utils
 
         public static string ShortString(this string str, int max) 
             => str?.Length > max ? $"{str.Substring(0, max)}..." : str;
+
+        public static string ToConfigTable(this IEnumerable<Configuration> configs)
+        {
+            (string fields, string values) = ("Field", "Value");
+            return string.Join("\n", configs.OrderBy(c=> c.Activated ? 1 : 0)
+                .Select(c=> new List<KeyValuePair<string, string>>()
+                    {
+                        new KeyValuePair<string, string>(nameof(c.Id), c.Id.ToString()),
+                        new KeyValuePair<string, string>( nameof(c.ServerUrl), c.ServerUrl ),
+                        new KeyValuePair<string, string>( nameof(c.Project), c.Project.ToString() ),
+                        new KeyValuePair<string, string>( nameof(c.PersonalToken), c.PersonalToken ),
+                        new KeyValuePair<string, string>( nameof(c.User), c.User ),
+                        new KeyValuePair<string, string>( nameof(c.Domain), c.Domain ),
+                        new KeyValuePair<string, string>( nameof(c.IsDomainCreds), c.IsDomainCreds.ToString() ),
+                        new KeyValuePair<string, string>( nameof(c.Activated), c.Activated.ToString() ),
+                        new KeyValuePair<string, string>( string.Empty, string.Empty )
+                    }.ToStringTable(new string[] { fields, values },
+                        c => c.Key, c=> c.Value)
+                )
+            );
+        }
     }
 }

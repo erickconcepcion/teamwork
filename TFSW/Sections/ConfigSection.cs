@@ -24,11 +24,11 @@ namespace TFSW.Sections
             _create = false;
             _options = new OptionSet()
             {
-                { "o|orgurl", "Azure Devops/TFS organization or collection url", v=> _config.ServerUrl = v },
-                { "t|personaltoken", "Azure Devops/TFS Personal token generated on user settings used for auth", v=> Console.WriteLine() },
-                { "u|user", "Azure Devops/TFS user network credentials for on-prem auth", v=> Console.WriteLine() },
-                { "d|domain", "Azure Devops/TFS domain name network credentials for on-prem auth", v=> Console.WriteLine() },
-                { "p|projectid", "Azure Devops/TFS project GUID for actual configuration. Run \"teamwork show projects\" commands to see all project",
+                { "o|orgurl=", "Azure Devops/TFS organization or collection url", v=> _config.ServerUrl = v },
+                { "t|personaltoken=", "Azure Devops/TFS Personal token generated on user settings used for auth", v=> _config.PersonalToken = v },
+                { "u|user=", "Azure Devops/TFS user network credentials for on-prem auth", v=> _config.User = v },
+                { "d|domain=", "Azure Devops/TFS domain name network credentials for on-prem auth", v=> _config.Domain = v },
+                { "p|projectid=", "Azure Devops/TFS project GUID for actual configuration. Run \"teamwork show projects\" commands to see all project",
                     v=> _config.Project = Guid.TryParse(v, out placeholder) ? new Guid(v) : _config.Project },
                 { "dc|domaincreds", "Azure Devops/TFS organization or collection url", v=> _config.IsDomainCreds = v!=null },
                 { "c|create", "Azure Devops/TFS organization or collection url", v=> _create= v!= null },

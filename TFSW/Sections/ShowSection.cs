@@ -25,7 +25,8 @@ namespace TFSW.Sections
                 new AzureDevopsClient(_config, true).GetWorkItemRelationTypes().Result.
                 ToStringRelTable()) },
             { "types", ()=> Console.WriteLine(new AzureDevopsClient(_config, true).GetWorkItemTypes().Result
-                .ToStringTypeTable()) }
+                .ToStringTypeTable()) },
+            { "configs", ()=> Console.WriteLine(new ConfigurationManager().All.ToConfigTable()) }
         };
         public override void Execute(IEnumerable<string> parameters)
         {
