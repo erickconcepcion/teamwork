@@ -15,19 +15,18 @@ namespace TFSW.Params
         }
         public bool Validate()
         {
-            var ret = true;
             if (_parameters.Count() == 0)
             {
                 Console.WriteLine("No command provided.");
-                ret = false;
+                return false;
             }
             var commandName = _parameters.FirstOrDefault();
             if (!_keys.Any(k => k == commandName.ToLower()))
             {
                 Console.WriteLine($"Command name \"{commandName}\" not found.");
-                ret = false;
+                return false;
             }
-            return ret;
+            return true;
         }
     }
 }
