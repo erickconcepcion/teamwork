@@ -60,12 +60,10 @@ namespace TFSW.Logics
                 Name = t.Name, ReferenceName = t.ReferenceName
             });
         public async Task<IEnumerable<WorkItem>> NestedWorkItem(WorkItem workItem, IEnumerable<WorkItemHierarchy> hierarchy)
-        {
-            return await Task.WhenAll(hierarchy.Select(h => _workItemClient.CreateWorkItemAsync(GetPatchBased(workItem, h.Title, h.WorkRelationshipType),
+        => await Task.WhenAll(hierarchy.Select(h => _workItemClient.CreateWorkItemAsync(GetPatchBased(workItem, h.Title, h.WorkRelationshipType),
             _config.Project,
             h.WorkItemType
             )));
-        }
         private JsonPatchDocument GetPatchBased(WorkItem workItem, string title, string relationReferenceName)
         {
             var obj = new JObject();
@@ -77,7 +75,7 @@ namespace TFSW.Logics
                 {
                     Operation = Operation.Add,
                     Path = "/fields/System.Title",
-                    Value = string.Format(title, workItem.Id, workItem.Fields["/fields/System.Title"])
+                    Value = string.Format(title, workItem.Id, workItem.Fields["System.Title"])
                 },
                 new JsonPatchOperation()
                 {

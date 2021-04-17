@@ -53,7 +53,7 @@ namespace TFSW.Logics
         {
             Console.WriteLine($"{hierarchyName}, {jsonHierarchy}, {jsonPath}");
             var json = string.IsNullOrEmpty(jsonHierarchy) ? File.ReadAllText(jsonPath) : jsonHierarchy;
-            var hierarchies = JsonSerializer.Deserialize<ICollection<WorkItemHierarchy>>(jsonHierarchy);
+            var hierarchies = JsonSerializer.Deserialize<ICollection<WorkItemHierarchy>>(json);
             if (hierarchies is null) throw new ArgumentNullException("Json string or file are required");
             foreach (var item in hierarchies)
             {
@@ -61,9 +61,15 @@ namespace TFSW.Logics
             }
             await CreateHierarchy(hierarchies, hierarchyName);
         }
+        private IEnumerable<WorkItemHierarchy> GetHierarchyByName(string hierarchyName) => All.Where(w => w.HierarchyName == hierarchyName);
+        public async Task NestedAllWorkItem(string hierarchyName, IEnumerable<int> ids)
+        {
+            var allWorkItems = await Task.WhenAll(ids.Select(i => _azureDevopsClient.GetWorkItem(i)));
+            await Task.WhenAll(allWorkItems.Select(wi => _azureDevopsClient.NestedWorkItem(wi, GetHierarchyByName(hierarchyName))));
+        }
         public void DeleteHierarchy(string hierarchyName)
         {
-            foreach (var item in All.Where(w => w.HierarchyName == hierarchyName))
+            foreach (var item in GetHierarchyByName(hierarchyName))
             {
                 Db.Delete(item);
             }

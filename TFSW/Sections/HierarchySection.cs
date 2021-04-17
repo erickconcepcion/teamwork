@@ -30,8 +30,8 @@ namespace TFSW.Sections
             };
         }
         /* Powershell string syntax
-        "[{\`"Title\`": \`"A title {1}{2}\`",\`"HierarchyType\`": \`"Child\`",\`"WorkItemType\`": \`"Task\`"},{\`"Title\`": \`"A US title {1}{2}\`",\`"HierarchyType\`": \`"Child\`",\`"WorkItemType\`": \`"User Story\`"}]"
-        "[{\"Title\": \"A title {1}{2}\",\"HierarchyType\": \"Child\",\"WorkItemType\": \"Task\"},{\"Title\": \"A US title {1}{2}\",\"HierarchyType\": \"Child\",\"WorkItemType\": \"User Story\"}]"
+        "[{\`"Title\`": \`"A title {0}{1}\`",\`"HierarchyType\`": \`"Child\`",\`"WorkItemType\`": \`"Task\`"},{\`"Title\`": \`"A US title {0}{1}\`",\`"HierarchyType\`": \`"Child\`",\`"WorkItemType\`": \`"User Story\`"}]"
+        "[{\"Title\": \"A title {0}{1}\",\"HierarchyType\": \"Child\",\"WorkItemType\": \"Task\"},{\"Title\": \"A US title {0}{1}\",\"HierarchyType\": \"Child\",\"WorkItemType\": \"User Story\"}]"
          */
 
         public override void Execute(IEnumerable<string> parameters)

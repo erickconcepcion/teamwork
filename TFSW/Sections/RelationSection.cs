@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TFSW.Logics;
 
 namespace TFSW.Sections
 {
@@ -12,26 +13,29 @@ namespace TFSW.Sections
         public RelationSection()
         {
             SectionName = "relation";
+            _workItemManager = new WorkItemManager(new ConfigurationManager());
             InitParamsActions();
         }
+        private readonly WorkItemManager _workItemManager;
+        private IEnumerable<int> ids;
+        private string name;
         private void InitParamsActions()
         {
             _options = new OptionSet()
             {
-                { "o|orgurl=", "Azure Devops/TFS organization or collection url", v=> _config.ServerUrl = v },
-                { "t|personaltoken=", "Azure Devops/TFS Personal token generated on user settings used for auth", v=> _config.PersonalToken = v },
-                { "u|user=", "Azure Devops/TFS user network credentials for on-prem auth", v=> _config.User = v },
-                { "d|domain=", "Azure Devops/TFS domain name network credentials for on-prem auth", v=> _config.Domain = v },
-                { "p|projectid=", "Azure Devops/TFS project GUID for actual configuration. Run \"teamwork show projects\" commands to see all project",
-                    v=> _config.Project = Guid.TryParse(v, out Guid placeholder) ? new Guid(v) : _config.Project },
-                { "dc|domaincreds", "Azure Devops/TFS organization or collection url", v=> _config.IsDomainCreds = v!=null },
-                { "h|help",  "show this message and exit",v => _help = v != null }
+                { "n|name=", "Hierarchy name (look at )", v=> name = v },
+                { "i|ids=", "Work item ids in comma separated ex: 1,2,25", v=> ids = v.Split(',').Select(i=> int.Parse(i)) },
             };
         }
         public override void Execute(IEnumerable<string> parameters)
         {
             ExecuteParams(parameters);
-            
+            if (!string.IsNullOrEmpty(name) && ids.Count()!=0)
+            {
+                Console.WriteLine("Nesting work items");
+                _workItemManager.NestedAllWorkItem(name, ids).Wait();
+                Console.WriteLine("Nested work items Completed");
+            }
 
         }
     }
