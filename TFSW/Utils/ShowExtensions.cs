@@ -25,6 +25,14 @@ namespace TFSW.Utils
             =>projects.ToStringTable(new string[] { "Id", "Name", "Description" }, 
                 p => p.Id, p => p.Name, p=> p.Description.ShortString(50));
 
+        public static string ToStringHierarchyTable(this IEnumerable<WorkItemHierarchy> hierarchies)
+            => string.Join(Environment.NewLine,
+                    hierarchies.GroupBy(h => h.HierarchyName).Select(g => $@"{g.Key}{Environment.NewLine}{g.ToStringTable(
+                        new string[] { "Title", "HierarchyType", "WorkItemType" },
+                        w => w.Title.ShortString(50), w => w.HierarchyType, w => w.WorkItemType)}"
+                    )
+                );
+
         public static string ShortString(this string str, int max) 
             => str?.Length > max ? $"{str.Substring(0, max)}..." : str;
 

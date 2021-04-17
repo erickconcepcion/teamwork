@@ -28,19 +28,20 @@ namespace TFSW.Sections
             Console.WriteLine("Options:");
             _options.WriteOptionDescriptions(Console.Out);
         }
-        protected void ExecuteParams(IEnumerable<string> args)
+        protected bool ExecuteParams(IEnumerable<string> args)
         {
             try
             {
                 _options.Parse(args);
                 if (_help) ShowHelp();
+                return true;
             }
             catch (OptionException e)
             {
                 Console.WriteLine(e.Message);
-                Console.WriteLine("Try `greet --help' for more information.");
-                return;
+                Console.WriteLine($"Try `teamwork {SectionName} --help' for more information.");
             }
+            return false;
 
         }
     }

@@ -11,9 +11,13 @@ namespace TFSW.Data
     {
         [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
+        //Title with format
         public string Title { get; set; }
+        //name of relationship Child, Relatet ETC
         public string HierarchyType { get; set; }
+        //US Task ETC
         public string WorkItemType { get; set; }
+        //Reference of HierarchyType
         public string WorkRelationshipType { get; set; }
         public string HierarchyName { get; set; }
     }
