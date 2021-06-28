@@ -13,10 +13,9 @@ namespace TFSW.Sections
         public RelationSection()
         {
             SectionName = "relation";
-            _workItemManager = new WorkItemManager(new ConfigurationManager());
             InitParamsActions();
         }
-        private readonly WorkItemManager _workItemManager;
+        private WorkItemManager _workItemManager;
         private IEnumerable<int> ids;
         private string name;
         private void InitParamsActions()
@@ -29,6 +28,7 @@ namespace TFSW.Sections
         }
         public override void Execute(IEnumerable<string> parameters)
         {
+            _workItemManager = new WorkItemManager(new ConfigurationManager());
             ExecuteParams(parameters);
             if (!string.IsNullOrEmpty(name) && ids.Count()!=0)
             {

@@ -9,11 +9,10 @@ namespace TFSW.Sections
         public HierarchySection()
         {
             SectionName = "hierarchy";
-            _workItemManager = new WorkItemManager(new ConfigurationManager());
             InitParamsActions();
         }
 
-        private readonly WorkItemManager _workItemManager;
+        private WorkItemManager _workItemManager;
         private string jsonString;
         private string name;
         private string jsonPath;
@@ -36,6 +35,7 @@ namespace TFSW.Sections
 
         public override void Execute(IEnumerable<string> parameters)
         {
+            _workItemManager = new WorkItemManager(new ConfigurationManager());
             ExecuteParams(parameters);
             if (!string.IsNullOrEmpty(name))
             {
